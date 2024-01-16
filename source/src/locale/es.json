@@ -1,0 +1,201 @@
+{
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "done": "Hecho",
+    "step": "Paso",
+    "new": "Nuevo",
+    "add": "Añadir",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "credentials": "Credenciales",
+    "enterPin": "Introduce tu PIN",
+    "remove": "Eliminar",
+    "cancel": "Cancelar",
+    "expired": "Credencial expirada",
+    "credential": "Credencial",
+    "errorDescription": "Por favor, intenta de nuevo más tarde.",
+    "notReadyDid": "Tu DID no está listo",
+    "notReadyDidMessage": "Por favor, espera a que tu dispositivo esté listo para continuar",
+    "authentication": "Autenticación",
+    "processing": "Procesando mensajes...",
+    "closeConnection": "Cerrar conexión",
+    "closeConnectionMessage": "¿Estás seguro de que quieres cerrar la conexión?",
+    "continue": "Continuar",
+    "skip": "Omitir",
+    "pinStack": {
+        "createPin": "Crea tu PIN",
+        "confirmPin": "Confirmando tu PIN",
+        "welcome": "Bienvenido",
+        "welcomeMessage": "Deberás crear un PIN de seguridad para poder continuar"
+    },
+    "introductionStack": {
+        "skip": "Omitir",
+        "start": "Comenzar"
+    },
+    "didStack": {
+        "createDid": "Crea una identidad descentralizada en este dispositivo",
+        "loadingTitle": "Publicando tu DID",
+        "loadingDid": "Tu Identidad Digital Descentralizada está siendo publicada y sólo tomará unos minutos. Podés cerrar y volver en unos minutos, te notificaremos cuando esté lista.",
+        "haveDid": "Si ya tienes una identidad descentralizada puedes importarla aquí",
+        "create": "Crear tu DID",
+        "import": "Importar datos",
+        "success": "Éxito",
+        "createdDid": "Tu identidad descentralizada ha sido creada correctamente",
+        "confirm": "Confirmar",
+        "errorMessage": "Ha ocurrido un error al crear tu identidad descentralizada, por favor, inténtalo de nuevo más tarde",
+        "cancelTitle": "Cancelar creación de DID",
+        "cancelMessage": "¿Estás seguro de que quieres cancelar la creación de tu DID?",
+        "optionYes": "Sí, cancelar",
+        "methodPlaceholder": "Selecciona un método",
+        "method": "Método"
+    },
+    "tabStack": {
+        "settings": "Ajustes",
+        "settingsMessage": "Aquí podrás ver los ajustes de la aplicación",
+        "notifications": "Notificaciones",
+        "notificationsMessage": "Aquí podrás ver las notificaciones que recibas",
+        "entities": "Entidades",
+        "entitiesMessage": "Aquí podrás ver las entidades disponibles para conectarte",
+        "credentials": "Credenciales",
+        "credentialsMessage": "Esta es tu billetera, aquí podrás ver tus credenciales y gestionarlas",
+        "scanMessage": "Escanea un QR para añadir una nueva credencial"
+    },
+    "credentialsScreen": {
+        "empty": "No has añadido ninguna credencial, añade una para poder comenzar",
+        "title": "Credenciales verificadas",
+        "add": "Añadir nueva credencial",
+        "deleted": "Credencial eliminada",
+        "deletedDescription": "Esta credencial ha sido eliminada"
+    },
+    "entitiesScreen": {
+        "empty": "No tienes entidades",
+        "title": "Entidades disponibles"
+    },
+    "notificationsScreen": {
+        "empty": "No tienes notificaciones",
+        "title": "Notificaciones"
+    },
+    "settingsScreen": {
+        "title": "Ajustes",
+        "export": {
+            "title": "Exportar claves",
+            "description": "Exportar tus datos a un archivo"
+        },
+        "share": {
+            "title": "Compartir tu DID",
+            "description": "Compartir tu DID con otros"
+        },
+        "reset": {
+            "title": "Reiniciar aplicación",
+            "description": "Reiniciar los datos de la aplicación",
+            "message": "¿Estás seguro de que quieres reiniciar la aplicación?",
+            "ok": "Reiniciar"
+        },
+        "config": {
+            "title": "Configuración",
+            "description": "Configuración de la aplicación"
+        }
+    },
+    "scanScreen": {
+        "title": "Escanear QR",
+        "error": "Error al escanear el código QR"
+    },
+    "configurationScreen": {
+        "title": "Configuración"
+    },
+    "credentialDetailsScreen": {
+        "title": "Detalles de credencial",
+        "remove": "Eliminar credential",
+        "removeMessage": "¿Estás seguro de que quieres eliminar esta credencial?"
+    },
+    "entityDetailsScreen": {
+        "title": "Detalles de entidad",
+        "button": "Conectar",
+        "name": "Nombre",
+        "description": "Descripción",
+        "website": "Redirección"
+    },
+    "addCredentialScreen": {
+        "title": "Añade una credencial",
+        "entityTitle": "Selecciona una entidad",
+        "scanTitle": "O escanea un QR",
+        "button": "Escanear"
+    },
+    "addEntityScreen": {
+        "title": "Nueva entidad",
+        "name": "Nombre",
+        "description": "Descripción",
+        "url": "URL",
+        "add": "Añadir",
+        "invalidUrl": "URL no válida"
+    },
+    "acceptCredentialsScreen": {
+        "header": "Credencial recibida",
+        "title": "Acepta tus credenciales",
+        "description": "está compartiendo esta información",
+        "expiration": "Expiración",
+        "accept": "Aceptar",
+        "reject": "Rechazar credenciales",
+        "rejectDescription": "¿Estás seguro de que quieres rechazar estas credenciales?"
+    },
+    "verificationResultScreen": {
+        "title": "Verificación",
+        "success": "Verificación exitosa",
+        "successMessage": "La verificación de la credencial ha sido exitosa",
+        "error": "Verificación fallida",
+        "errorMessage": "La verificación de la credencial ha fallado"
+    },
+    "presentCredentialsScreen": {
+        "title": "Presenta tus credenciales",
+        "empty": "No tienes credenciales válidas",
+        "message": "Añade una credencial valida",
+        "expiration": "Expiración",
+        "accept": "Presentar",
+        "emit": "quiere emitirte estas credenciales:",
+        "present": "Necesitas presentar las siguientes credenciales:",
+        "reject": "Rechazar credenciales",
+        "rejectDescription": "¿Estás seguro de que quieres rechazar estas credenciales?"
+    },
+    "notifications": {
+        "didCreated": {
+            "title": "Tu DID está listo ✅",
+            "body": "Tu DID está listo para ser usado"
+        },
+        "issueCredential": {
+            "title": "Nueva credencial",
+            "body": "Obtuviste una nueva credencial"
+        },
+        "offerCredential": {
+            "title": "Oferta de credenciales",
+            "body": "Quieren emitirte nuevas credenciales"
+        },
+        "requestPresentation": {
+            "title": "Solicitud de presentación",
+            "body": "Se requiere la presentación de una credencial"
+        },
+
+        "presentationAck": {
+            "titleOk": "Verificación exitosa ✅",
+            "titleFail": "Fallo en la verificación ❌",
+            "bodyOk": "La verificación de tu credencial fue exitosa",
+            "bodyFail": "Fallo en la verificación de tu credencial"
+        },
+
+        "proposeCredential": "Propuesta de credencial",
+        "requestCredential": "Pedido de credencial",
+        "proposePresentation": "Propuesta de presentación",
+        "problemReport": "Error"
+    },
+    "verificationError": {
+        "default": "Error inesperado",
+        "verifiable-credential-expired": "Credencial expirada",
+        "vc-invalid-signature": "Firma inválida",
+        "verification-method-not-found": "Método de verificación no encontrado",
+        "verification-relationship-invalid": "Relación de verificación inválida",
+        "verifiable-credential-revoked": "Credencial revocada",
+        "verifiable-credential-suspended": "Credencial suspendida",
+        "credential-status-service-error": "Error al verificar el estado de la credencial",
+        "reject-authentication": "Error de autenticación"
+    }
+}

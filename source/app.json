@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "scheme": "extrimian",
+    "name": "QuarkID",
+    "version": "3.0.2",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "packagerOpts": {
+      "config": "metro.config.js"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Face ID is used to authenticate the user.",
+        "UIBackgroundModes": [
+          "fetch"
+        ],
+        "NSCameraUsageDescription": "Camera is used to scan QR codes to obtain your credentials."
+      },
+      "bundleIdentifier": "com.quarkid"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.quarkid"
+    }
+  }
+}

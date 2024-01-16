@@ -1,0 +1,201 @@
+{
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "done": "Done",
+    "step": "Step",
+    "new": "New",
+    "add": "Add",
+    "accept": "Accept",
+    "reject": "Reject",
+    "credentials": "Credentials",
+    "enterPin": "Enter your PIN",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "expired": "Expired credential",
+    "errorDescription": "Please try again later",
+    "credential": "Credential",
+    "notReadyDid": "Your DID is not ready yet",
+    "notReadyDidMessage": "This feature is not ready yet, please try again later",
+    "authentication": "Authentication",
+    "processing": "Processing messages...",
+    "closeConnection": "Close connection",
+    "closeConnectionMessage": "Are you sure you want to close the connection?",
+    "continue": "Continue",
+    "skip": "Skip",
+    "pinStack": {
+        "createPin": "Create your PIN",
+        "confirmPin": "Confirming your PIN",
+        "welcome": "Welcome",
+        "welcomeMessage": "You must create a security PIN to continue"
+    },
+    "introductionStack": {
+        "skip": "Skip",
+        "start": "Let's get started"
+    },
+    "didStack": {
+        "createDid": "Create a decentralized ID on this device",
+        "loadingTitle": "Publishing your DID",
+        "loadingDid": "Your Decentrilized ID is being published, this may take a few minutes, you can close the app and come back later",
+        "haveDid": "If you already have a decentralized ID you can import it",
+        "create": "Create your DID",
+        "import": "Import data",
+        "success": "Success",
+        "createdDid": "Your decentralized ID has been successfully created",
+        "confirm": "Confirmar",
+        "errorMessage": "There was an error creating your DID, please try again later",
+        "cancelTitle": "Cancel creation",
+        "cancelMessage": "Are you sure you want to cancel the creation of your DID?",
+        "optionYes": "Yes",
+        "methodPlaceholder": "Select a method",
+        "method": "Method"
+    },
+    "tabStack": {
+        "settings": "Settings",
+        "settingsMessage": "Here you can configure the application",
+        "notifications": "Notifications",
+        "notificationsMessage": "Here you can see the notifications that you have received",
+        "entities": "Entities",
+        "entitiesMessage": "Here you can see the entities that you have connected to, you can also add new entities",
+        "credentials": "Credentials",
+        "credentialsMessage": "This is your wallet. You can store, add and delete your credentials here",
+        "scanMessage": "Scan a QR code to add a new credential"
+    },
+    "credentialsScreen": {
+        "empty": "You don't have any credentials yet, please add some to see them here",
+        "title": "Your Verified Credentials",
+        "add": "Add new credential",
+        "deleted": "Deleted credential",
+        "deletedDescription": "This credential has already been eliminated"
+    },
+    "entitiesScreen": {
+        "title": "Available entities",
+        "empty": "No entities"
+    },
+    "notificationsScreen": {
+        "empty": "No notifications",
+        "title": "Notifications"
+    },
+    "settingsScreen": {
+        "title": "Settings",
+        "export": {
+            "title": "Export data",
+            "description": "Export your data to a file"
+        },
+        "share": {
+            "title": "Share your DID",
+            "description": "Share your DID with others"
+        },
+        "reset": {
+            "title": "Reset application",
+            "description": "This will reset all application data",
+            "message": "Are you sure you want to reset the application?",
+            "ok": "Reset"
+        },
+        "config": {
+            "title": "Configuration",
+            "description": "Configure the application"
+        }
+    },
+    "scanScreen": {
+        "title": "Scan QR",
+        "error": "Error scanning QR code"
+    },
+    "configurationScreen": {
+        "title": "Configuration"
+    },
+    "credentialDetailsScreen": {
+        "title": "Credential details",
+        "remove": "Remove credential",
+        "removeMessage": "Are you sure you want to remove this credential?"
+    },
+    "entityDetailsScreen": {
+        "title": "Entity details",
+        "button": "Connect",
+        "name": "Name",
+        "description": "Description",
+        "website": "Redirect"
+    },
+    "addCredentialScreen": {
+        "title": "Add a credential",
+        "entityTitle": "Select an entity",
+        "scanTitle": "Or scan a QR code",
+        "button": "Scan now"
+    },
+    "addEntityScreen": {
+        "title": "New entity",
+        "name": "Name",
+        "description": "Description",
+        "url": "URL",
+        "add": "Add",
+        "invalidUrl": "Invalid URL"
+    },
+    "acceptCredentialsScreen": {
+        "header": "Received credential",
+        "title": "Accept your credentials",
+        "description": "is sharing this data",
+        "expiration": "Expiration",
+        "accept": "Accept",
+        "reject": "Reject credentials",
+        "rejectDescription": "Are you sure you want to reject these credentials?"
+    },
+    "verificationResultScreen": {
+        "title": "Verification",
+        "success": "Verification successful",
+        "successMessage": "The credential has been successfully verified",
+        "error": "Verification failed",
+        "errorMessage": "The credential could not be verified"
+    },
+    "presentCredentialsScreen": {
+        "title": "Present your credentials",
+        "empty": "You have no valid credentials",
+        "message": "Add valid credentials",
+        "expiration": "Expiración",
+        "accept": "Present",
+        "emit": "wants to emit these credentials",
+        "present": "You need to present the following credentials:",
+        "reject": "Reject credentials",
+        "rejectDescription": "Are you sure you want to reject these credentials?"
+    },
+    "notifications": {
+        "didCreated": {
+            "title": "Your DID is ready ✅",
+            "body": "Your DID is ready, you can now use the application"
+        },
+        "issueCredential": {
+            "title": "Credential issue",
+            "body": "You obtained a new credential"
+        },
+        "offerCredential": {
+            "title": "Credential offer",
+            "body": "Offer of new credential"
+        },
+        "requestPresentation": {
+            "title": "Request presentation",
+            "body": "The presentation of a credential is required"
+        },
+
+        "presentationAck": {
+            "titleOk": "Successful verification ✅",
+            "titleFail": "Verification failure ❌",
+            "bodyOk": "The verification of your credential was successful",
+            "bodyFail": "Failure in the verification of your credential"
+        },
+        "proposeCredential": "Credential proposal",
+        "requestCredential": "Credential request",
+        "proposePresentation": "Presentation propose",
+
+        "problemReport": "Error"
+    },
+    "verificationError": {
+        "default": "Unexpected error",
+        "verifiable-credential-expired": "Expired credential",
+        "vc-invalid-signature": "Invalid signature",
+        "verification-method-not-found": "Verification method not found",
+        "verification-relationship-invalid": "Verification relationship invalid",
+        "verifiable-credential-revoked": "Verifiable credential revoked",
+        "verifiable-credential-suspended": "Verifiable credential suspended",
+        "credential-status-service-error": "Credential status service error",
+        "reject-authentication": "Authentication error"
+    }
+}
