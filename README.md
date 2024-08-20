@@ -1,9 +1,9 @@
-## [Description](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#descripci%C3%B3n) and [Features](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#descripci%C3%B3n)
-## [Technologies](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#tecnolog%C3%ADas)
+## [Description](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#description) and [Features](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#description)
+## [Technologies](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#tecnologies)
 ## [Architecture](https://docs.quarkid.org/en/Arquitectura/) and [Documentation](https://docs.quarkid.org/en/Arquitectura/componentes/)
 ## Configurations:
-### 1. [Local Environment Setup](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#configuraraci%C3%B3n-de-entorno-local)
-### 2. [Environment Variables](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#variables-de-entorno)
+### 1. [Local Environment Setup](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#local-environment-setup)
+### 2. [Environment Variables](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#environment-variables)
 
 -------------------------------------------------------------------------
 
