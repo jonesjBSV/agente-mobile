@@ -1,63 +1,59 @@
-## [Descripción](https://github.com/gcba/agente-mobile?tab=readme-ov-file#descripci%C3%B3n) y [Funcionalidades](https://github.com/gcba/agente-mobile?tab=readme-ov-file#descripci%C3%B3n)
-## [Tecnologías](https://github.com/gcba/agente-mobile?tab=readme-ov-file#tecnolog%C3%ADas)
-## [Arquitectura](https://docs.quarkid.org/Arquitectura/) y [Documentación](https://docs.quarkid.org/Arquitectura/componentes/)
-## Configuraciones:
-### 1. [Configuraración de entorno local](https://github.com/gcba/agente-mobile?tab=readme-ov-file#configuraraci%C3%B3n-de-entorno-local)
-### 2. [Variables de Entorno](https://github.com/gcba/agente-mobile?tab=readme-ov-file#variables-de-entorno)
-## [Licencia](https://github.com/gcba/agente-mobile?tab=readme-ov-file#licencia)
-
-
-
-
+## [Description](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#descripci%C3%B3n) and [Features](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#descripci%C3%B3n)
+## [Technologies](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#tecnolog%C3%ADas)
+## [Architecture](https://docs.quarkid.org/en/Arquitectura/) and [Documentation](https://docs.quarkid.org/en/Arquitectura/componentes/)
+## Configurations:
+### 1. [Local Environment Setup](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#configuraraci%C3%B3n-de-entorno-local)
+### 2. [Environment Variables](https://github.com/ssi-quarkid/agente-mobile?tab=readme-ov-file#variables-de-entorno)
 
 -------------------------------------------------------------------------
 
-## Descripción
+## Description
 
-El agente permite la creación de una identidad digital auto-soberana. 
-También crea, recibe y comparte credenciales verificables.
-Tener contactos de confianza, DIDs de organizaciones y gobiernos que sean públicos. Acceda a servicios de diferentes organizaciones de forma segura y estándar. Comunicarse con otros agentes u organizaciones de forma descentralizada, encriptada y autenticada.
-### Funcionalidades
+The agent allows the creation of a self-sovereign digital identity. 
+It also creates, receives, and shares verifiable credentials.
+It can have trusted contacts, public DIDs of organizations and governments. Access services from different organizations securely and in a standardized way. Communicate with other agents or organizations in a decentralized, encrypted, and authenticated manner.
 
-- Generación de DID (Generación de claves para recuperación, actualización, firma y transporte)
-- Almacenamiento de credenciales verificables
-- Almacenamiento de entidades conocidas
-- Manejo de protocolo WACI-DIDComm (con WACI-Interpreter)
-- Capacidad de presentación de credenciales
-- Importacion y Exportacion de DID.
+### Features
 
-## Tecnologías
+- DID Generation (Generation of keys for recovery, update, signature, and transport)
+- Storage of verifiable credentials
+- Storage of known entities
+- Handling of WACI-DIDComm protocol (with WACI-Interpreter)
+- Capability for credential presentation
+- DID import and export
 
-La aplicación cuenta con las siguientes tecnologías:
+## Technologies
+
+The application uses the following technologies:
 
 - Node 14.19.3
 - React Native 0.69.3
 - Expo 5.3.0
 - Typescript 2.0.4
   
-## Arquitectura
-[Diagrama](https://docs.quarkid.org/Arquitectura/)
+## Architecture
+[Diagram](https://docs.quarkid.org/en/Arquitectura/)
 
-## Documentación
-[Link](https://docs.quarkid.org/Arquitectura/componentes/)
+## Documentation
+[Link](https://docs.quarkid.org/en/Arquitectura/componentes/)
 
-## Configuraración de entorno local
+## Local Environment Setup
 
-1. Clonar el repositorio
+1. Clone the repository
 
-Pre-requisitos:
-- Instalar java sdk v14.*
-- Instalar el ambiente de desarollo [React Native 0.69.3](https://reactnative.dev/docs/environment-setup)
-- Configurar variables de entorno de Java:
+Prerequisites:
+- Install Java SDK v14.*
+- Install the development environment [React Native 0.69.3](https://reactnative.dev/docs/environment-setup)
+- Configure Java environment variables:
     - JAVA_HOME
     - PATH
 
-- Instalar Android Studio. *Se debe utilizar con la versión java sdk v14, mencionado en el primer paso.*
-- - Generar un emulador en Android Studio
-- Abrir el proyecto con el editor seleccionado
-- Abrir una terminal y ejecutar:
+- Install Android Studio. *It should be used with Java SDK v14, mentioned in the first step.*
+- Generate an emulator in Android Studio
+- Open the project with the selected editor
+- Open a terminal and execute:
 
-Instalar dependencias:
+Install dependencies:
 
 ```bash
 cd source
@@ -65,21 +61,21 @@ yarn
 yarn postinstall
 ```
 
-- Modificar:
-El archivo: node_modules\react-native-os\android\build.gradle 
-Linea 47: cambiar la 'compilation' por 'implentation'
+- Modify:
+The file: node_modules\react-native-os\android\build.gradle 
+Line 47: change 'compilation' to 'implementation'
 
-## Variables de Entorno
+## Environment Variables
 
-- Configura tus variables en el archivo /source/src/config/agent.ts
+- Configure your variables in the file /source/src/config/agent.ts
 
-Iniciar la app
+Start the app
 
 ```bash
 yarn android
 ```
 
-### Generales
+### General
 
 N/A
 
@@ -87,22 +83,9 @@ N/A
 
 N/A
 
-## Requerimientos de red
-La aplicación debe tener conectividad a internet. 
+## Network Requirements
+The application must have internet connectivity. 
 
-## Ruta de acceso
+## Access Route
 
 N/A 
-
-## Licencia
-Derechos de autor © 2023 Gobierno de la Ciudad de Buenos Aires
-
-Licenciado bajo la Licencia Apache, Versión 2.0 (la "Licencia");
-usted no puede utilizar este archivo excepto en cumplimiento con la Licencia.
-Puede obtener una copia de la Licencia en
-http://www.apache.org/licenses/LICENSE-2.0.
-A menos que lo requiera la ley aplicable o se acuerde por escrito, el software
-distribuido bajo la Licencia se distribuye "TAL CUAL",
-SIN GARANTÍAS O CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
-Consulte la Licencia para el idioma específico que rige los permisos y
-limitaciones bajo la Licencia.
