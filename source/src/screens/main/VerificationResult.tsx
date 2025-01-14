@@ -43,9 +43,7 @@ const VerificationResult: FC<VerificationResultProps> = ({ navigation, route }) 
                 <Body>
                     {result.status
                         ? i18n.t('verificationResultScreen.successMessage')
-                        : i18n.t(`verificationError.${result.code}`, {
-                              defaultValue: '',
-                          }) || i18n.t('verificationError.default')}
+                        : result.codeMessage || i18n.t('verificationError.default')}
                 </Body>
             </TextWrapper>
 

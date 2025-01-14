@@ -136,7 +136,7 @@ const CreateDid: FC<CreateDidProps> = () => {
                     </ImageWrapper>
                     <TextWrapper>
                         <Title style={{ color: theme.color.secondary }}>{i18n.t('didStack.createDid')}</Title>
-                        <Description theme={theme} style={{ ...theme.font.subtitle }}>{i18n.t('didStack.haveDid')}</Description>
+                        {/*<Description theme={theme} style={{ ...theme.font.subtitle }}>{i18n.t('didStack.haveDid')}</Description>*/}
                     </TextWrapper>
                 </ItemWrapper>
                 {multiMethod && (

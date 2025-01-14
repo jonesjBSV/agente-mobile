@@ -67,6 +67,7 @@ const Authenticate = () => {
         });
     }, []);
     const bkcolor = app.expo.name == "RockID" ? {backgroundColor: theme.color.primary} : null;
+
     return (
         <Container
             style={{

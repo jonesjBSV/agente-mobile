@@ -3,6 +3,7 @@ export enum StorageType {
     INTRODUCTION = 'introduction',
     TUTORIAL = 'tutorial',
     WITH_DID = 'withDid',
+    TYC = 'TermsAndConditions',
     CONFIRMED_DID = 'confirmDid',
 }
 
@@ -16,10 +17,12 @@ export enum StateType {
     UNAUTHENTICATED = 'unauthenticated',
     AUTHENTICATED = 'authenticated',
     STARTING = 'starting',
+    TYC = 'TermsAndConditions',
 }
 
 export enum SecureStorageType {
     PIN = 'pin',
+    TYC = 'termsAndConditions',
 }
 
 export enum NotificationType {

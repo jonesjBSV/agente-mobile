@@ -30,6 +30,7 @@ const AcceptCredentials = ({ navigation, route }) => {
                 selected: true,
             })) || []
     );
+    const [ isDisabled, setIsDisabled ] = useState(false)
     const [enableButton, setEnableButton] = useState(true)
     const count = useMemo(() => credentials.filter((credential) => credential.selected).length || 0, [credentials]);
     const issuer = useMemo(() => route.params?.issuer, [route.params?.issuer]);
@@ -65,6 +66,7 @@ const AcceptCredentials = ({ navigation, route }) => {
     );
 
     const acceptCredentials = useCallback(async () => {
+        setIsDisabled(true)
         try {
             const selectedCredentials = credentials
                 .filter((item) => item.selected)
@@ -175,18 +177,37 @@ const AcceptCredentials = ({ navigation, route }) => {
                         return (
                             <View key={index}>
                                 {!!index && <View style={{ height: 10 }} />}
-                                <CredentialItem activeOpacity={0.8} style={{ backgroundColor: 'white', borderRadius: 15, padding: 10, paddingVertical: 25, flexDirection:'row', justifyContent: 'space-between', alignItems:'center' }}
+                                <CredentialItem
+                                    activeOpacity={0.8}
+                                    style={{
+                                        borderRadius: 15,
+                                        padding: 10,
+                                        paddingVertical: 25,
+                                        flexDirection:'row',
+                                        justifyContent: 'space-between',
+                                        alignItems:'center',
+                                    }}
                                     onPress={() => {
                                         item?.data &&
                                             navigation.navigate('CredentialDetails', {
                                                 credential: item,
                                                 color: item?.styles?.text?.color,
+                                                isFromPresentCredential: true,
                                             });
                                     }}
                                 >
                                     <View>
                                         {/* <ImageBkgStyled imageStyle={{ borderRadius: 15 }} style={{ padding: 10, paddingBottom:50 }} source={{ uri: item?.styles?.hero?.uri }}> */}
-                                        <Title color={theme.color.font} style={{ marginLeft: 10, marginBottom: 10 }}>{item?.display?.title?.text || item?.display?.title?.fallback || i18n.t('credential')}</Title>
+                                        <Title
+                                            color={theme.color.font}
+                                            style={{
+                                                marginLeft: 10,
+                                                marginBottom: 10,
+                                                width: 250,
+                                            }}
+                                        >
+                                            {item?.display?.title?.text || item?.display?.title?.fallback || i18n.t('credential')}
+                                        </Title>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                             {item?.styles?.thumbnail?.uri && (
                                                 <ViewStyled style={{ backgroundColor: item?.styles?.background?.color || theme.color.tertiary, borderRadius: 100, height: 35, width: 35, marginRight: 10, alignItems: 'center', justifyContent: 'center' }}>
@@ -211,7 +232,15 @@ const AcceptCredentials = ({ navigation, route }) => {
                                                     />
                                                 </ViewStyled>
                                             )}
-                                            <Title  ellipsizeMode={'tail'} numberOfLines={2}  style={{ color: theme.color.secondary, width:'65%' }}>{item?.data?.issuer?.name || item?.data?.issuer?.id || item?.data?.issuer || i18n.t('credential')}</Title>
+                                            <Title
+                                                ellipsizeMode={'tail'}
+                                                numberOfLines={2}
+                                                style={{
+                                                    color: theme.color.secondary,
+                                                    width:'65%',
+                                                }}>
+                                                    {item?.data?.issuer?.name || item?.data?.issuer?.id || item?.data?.issuer || i18n.t('credential')}
+                                            </Title>
                                         </View>
                                     </View>
                                     <Checkbox
@@ -254,9 +283,14 @@ const AcceptCredentials = ({ navigation, route }) => {
                     </Button>
                 </ButtonWrapper> */}
                 <ButtonsWrapper>
-                    <EmailButton onPress={enableButton ? acceptCredentials : null}
-                        disable={enableButton} style={{backgroundColor:enableButton ? theme.color.secondary : '#D5D5D5'}}
-                        onShowUnderlay={() => isBtnPress1(true)} onHideUnderlay={() => isBtnPress1(false)} theme={theme}>
+                    <EmailButton
+                        onPress={isDisabled || !enableButton ? null : acceptCredentials}
+                        disabled={isDisabled}
+                        style={{backgroundColor: isDisabled || !enableButton ? '#333333' : theme.color.secondary}}
+                        onShowUnderlay={() => isBtnPress1(true)}
+                        onHideUnderlay={() => isBtnPress1(false)}
+                        theme={theme}
+                    >
                         <Texto style={{ color: theme.color.primary }} btnPressed={btnPress1}>{i18n.t('add')}</Texto>
                     </EmailButton>
                     <SendButton onPress={() => { setVisible(true) }}
@@ -312,7 +346,7 @@ align-items: center;
 gap: 10px;
 width: ${Dimensions.get('window').width - 64}px;
 border-radius: 50px;
-background: ${props => props.theme.color.secondary};
+background: ${props => props.disabled ? '#333333' : props.theme.color.secondary};
 margin-bottom: 16px;
 `;
 

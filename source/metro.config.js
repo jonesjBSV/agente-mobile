@@ -9,7 +9,7 @@ const config = createMetroConfiguration(projectRoot);
 config.resolver.nodeModulesPaths = [path.resolve(projectRoot, 'node_modules'), path.resolve(workspaceRoot, 'node_modules')];
 
 config.resolver.extraNodeModules = {
-    ...require('node-libs-react-native'),
+    ...require('node-libs-react-native', '@mattrglobal/node-bbs-signatures'),
     ...config.resolver.extraNodeModules,
 };
 
