@@ -21,6 +21,8 @@ It can have trusted contacts, public DIDs of organizations and governments. Acce
 - Handling of WACI-DIDComm protocol (with WACI-Interpreter)
 - Capability for credential presentation
 - DID import and export
+- VC Attachments
+- VCs Back Up and Recovery
 
 ## Technologies
 
