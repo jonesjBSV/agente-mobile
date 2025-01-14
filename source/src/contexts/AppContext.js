@@ -27,6 +27,7 @@ export const AppProvider = ({ children }) => {
             credential: state.credential,
             agent: state.agent,
             isConnected: state.isConnected,
+            tyc: state.tyc,
         }),
         shallow
     );
@@ -56,7 +57,9 @@ export const AppProvider = ({ children }) => {
         const handleAckCompleted = (data) => {
             ackCompleted(data);
         };
-
+        const handleProblemReport  = (data) => { 
+            ackCompleted(data)
+        } 
         const handleAuthenticate = () => {
             ackCompleted({ status: 'OK' });
         };
@@ -88,7 +91,7 @@ export const AppProvider = ({ children }) => {
             const linking = Linking.addEventListener('url', handleLinkingUrl);
             agent.vc.credentialArrived.on(handleCredentialArrived);
             agent.vc.ackCompleted.on(handleAckCompleted);
-            agent.vc.problemReport.on(handleAckCompleted);
+            agent.vc.problemReport.on(handleProblemReport);
             agent.transport.connected.on(handleConnect);
             agent.transport.disconnected.on(handleDisconnect);
             // oneClickPlugin.problemReport.on(handleProblemReport);

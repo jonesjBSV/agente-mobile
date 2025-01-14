@@ -6,7 +6,12 @@ Use `Node v18`
 
 ```bash
 git clone https://github.com/extrimian/mobile-agent.git
+cd agente-mobile
 yarn
+
+// in agente-mobile\source\node_modules\react-native-os\android\build.gradle
+// modify line 47
+    implementation 'com.facebook.react:react-native:+'
 
 # macOS
 brew install jq

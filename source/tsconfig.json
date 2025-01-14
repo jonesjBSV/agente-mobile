@@ -3,6 +3,6 @@
   "compilerOptions": {
     "jsx": "react",
     "experimentalDecorators": true,
-    "typeRoots": ["./src/types"],
+    "typeRoots": ["./src/types"]
   }
 }

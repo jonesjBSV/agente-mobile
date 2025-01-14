@@ -1,8 +1,8 @@
 {
   "expo": {
     "scheme": "extrimian",
-    "name": "QuarkID HML",
-    "version": "3.0.6",
+    "name": "QuarkID",
+    "version": "3.1.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "splash": {
@@ -16,26 +16,22 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
       "infoPlist": {
         "NSFaceIDUsageDescription": "Face ID is used to authenticate the user.",
-        "UIBackgroundModes": [
-          "fetch"
-        ],
+        "UIBackgroundModes": ["fetch"],
         "NSCameraUsageDescription": "Camera is used to scan QR codes to obtain your credentials."
       },
-      "bundleIdentifier": "com.extrimian.quarkid.hml"
+      "bundleIdentifier": "com.quarkid"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#f3f6f9"
       },
-      "package": "com.extrimian.quarkid.hml"
+      "package": "com.quarkid"
     }
   }
 }

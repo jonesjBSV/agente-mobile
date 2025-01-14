@@ -171,7 +171,7 @@ const CredentialAbstract: FC<CredentialAbstractProps> = ({ remove, children, cre
                                     }}
                                 />
                             </ViewStyled>
-                            <ViewStyled style={{ marginLeft: 10}}>
+                            <ViewStyled style={{ marginLeft: 10, width: '85%'}}>
                                 <Title
                                     style={{
                                         fontFamily:'Manrope-Bold',
