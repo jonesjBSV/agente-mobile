@@ -21,8 +21,8 @@ It can have trusted contacts, public DIDs of organizations and governments. Acce
 - Handling of WACI-DIDComm protocol (with WACI-Interpreter)
 - Capability for credential presentation
 - DID import and export
-- VC Attachments
-- VCs Back Up and Recovery
+- [VC Attachments](https://github.com/ssi-quarkid/Paquetes-NPMjs/pull/1/commits/e88c1315a8302459d5e9462bdfc97183fecb9f4b)
+- [VCs Back Up and Recovery](https://github.com/ssi-quarkid/agente-mobile/blob/main/vc-recovery.md)
 
 ## Technologies
 
