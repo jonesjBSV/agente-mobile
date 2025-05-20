@@ -1,0 +1,39 @@
+{
+  "cli": {
+    "version": ">= 16.6.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "env": {
+          "NPM_FLAGS": "--legacy-peer-deps"
+        },
+        "gradleCommand": ":app:assembleDebug --stacktrace --info"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "env": {
+          "NPM_FLAGS": "--legacy-peer-deps"
+        },
+        "gradleCommand": ":app:assembleRelease --stacktrace --info"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "env": {
+          "NPM_FLAGS": "--legacy-peer-deps"
+        },
+        "gradleCommand": ":app:bundleRelease --stacktrace --info"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

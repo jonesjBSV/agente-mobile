@@ -24,6 +24,7 @@ interface ListLayoutProps {
   extraData?: any;
   maxToRenderPerBatch?: number;
   windowSize?: number;
+  horizontal?: boolean;
 }
 
 const ListLayout: FC<ListLayoutProps> = ({

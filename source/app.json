@@ -16,12 +16,16 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "infoPlist": {
         "NSFaceIDUsageDescription": "Face ID is used to authenticate the user.",
-        "UIBackgroundModes": ["fetch"],
+        "UIBackgroundModes": [
+          "fetch"
+        ],
         "NSCameraUsageDescription": "Camera is used to scan QR codes to obtain your credentials."
       },
       "bundleIdentifier": "com.quarkid"
@@ -32,6 +36,11 @@
         "backgroundColor": "#f3f6f9"
       },
       "package": "com.quarkid"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "83c93142-cff2-4745-af93-b3f77643a35a"
+      }
     }
   }
 }

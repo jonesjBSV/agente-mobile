@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   View,
   Platform,
+  ActivityIndicator, // Added for loading indicator
 } from "react-native";
 import styled from "styled-components/native";
 import BasicLayout from "../../components/BasicLayout";
@@ -27,10 +28,12 @@ import ForwardIcon from "../../assets/icons/ForwardIcon";
 import { ExtrimianVCAttachmentAgentPlugin } from "@extrimian/vc-attachments-agent-plugin";
 import { AttachmentFileStorage } from "../../storages/fs-storage";
 import { VerifiableCredentialWithInfo } from "../../models/credential";
+
 interface CredentialDetailsProperties {
   label: string;
   value: string;
 }
+
 const ImageItem = ({ navigation, item }) => {
   const theme: any = useTheme();
   const [error, setError] = useState(false);
@@ -47,7 +50,7 @@ const ImageItem = ({ navigation, item }) => {
         <ImageWrapper
           onPress={() => navigation.navigate("ImageDetails", { item })}
         >
-          <ImageStyled
+          <ImageBkgStyled
             style={{
               width: Dimensions.get("window").width / 2.5,
               height: Dimensions.get("window").width / 2.5,
@@ -58,136 +61,218 @@ const ImageItem = ({ navigation, item }) => {
               uri: item.value,
               cache: "force-cache",
             }}
-            onError={() => {
-              setError(true);
-            }}
+            onError={() => setError(true)}
           />
-          <Separator />
         </ImageWrapper>
       ) : (
-        <>
-          <Value ellipsizeMode="tail" numberOfLines={3}>
-            {item.value}
-          </Value>
-          <Separator />
-        </>
+        <Value
+          style={{
+            color: theme.color.secondary,
+          }}
+        >
+          {i18n.t("imageError")}
+        </Value>
       )}
     </>
   );
 };
 
-const ImageStyled = styled(Image)``;
-
 const CredentialDetails = ({ navigation, route }) => {
+  const [bsvStatus, setBsvStatus] = useState<string | null>(null); // Added for BSV status
   const [contentHeight, setContentHeight] = useState(0);
   const [hasAttachments, setHasAttachments] = useState(false);
   const [hasOneAttachment, setHasOneAttachment] = useState(false);
   const [pdfFiles, setPdfFiles] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [isDocAvailable, setIsDocAvailable] = useState(false);
+  const [owner, setOwner] = useState(false);
+  const [operationalDidString, setOperationalDidString] = useState<string | null>(null);
   const { credential, did } = useApplicationStore((state) => ({
-    credential: state.credential,
+    credential: state.credential, // credential store slice
     did: state.did,
   }));
   const theme: any = useTheme();
 
+  const [currentCredential, setCurrentCredential] =
+    useState<VerifiableCredentialWithInfo | null>(null); // local state for the VC being displayed
+  const [popupVisible, setPopupVisible] = useState(false);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
-  const { height } = useWindowDimensions();
-  const buttonColor = "#505E70";
 
-  const currentCredential: VerifiableCredentialWithInfo = useMemo(
-    () => route.params?.credential,
-    []
-  );
-
-  const styles = useMemo(() => route.params?.credential.styles, []);
-  const remove = useMemo(() => route.params?.remove, []);
-
-  const properties: CredentialDetailsProperties[] = useMemo(() => {
-    return currentCredential.display?.properties
-      ?.map((prop) => {
-        const value = formatField(currentCredential.data, prop);
-        /*
-                if (prop.label === 'link' || prop.label === 'Link') {
-                    const value = formatField(currentCredential.data, prop)
-                    setLink(value)
-                }
-                */
-        if (!validator.isDataURI(value) && !isImgUrl(value)) {
-          return {
-            label: prop.label,
-            value,
-          };
-        }
-      })
-      .filter((prop) => prop.label !== "link" && prop.label !== "Link");
-  }, [currentCredential]);
-
-  const fetchAttachments = async () => {
-    const attachmentPlugin = new ExtrimianVCAttachmentAgentPlugin({
-      attachmentStorage: new AttachmentFileStorage(),
-      fileAttachmentContextName: "",
-    });
-    const fileAttachments = await attachmentPlugin.getFileAttachments(
-      currentCredential.data
-    );
-    /*
-        // Uncomment this to try 3 attachments
-        const fileAttachments = [{
-            "description": "Credencial de identidad de la Ciudad de Buenos Aires",
-            "extension": "pdf",
-            "hash": "23203f9264161714cdb8d2f474b9b641e6a735f8cea4098c40a3cab8743bd749",
-            "localDownloadPath": "/data/user/0/com.quarkid/files/quarkid_fs/did_quarkid_zksync_EiAauMsrxbK8t670y8l8GKYMEU6UUuxZDwly0wHXoL2I_Q/23203f9264161714cdb8d2f474b9b641e6a735f8cea4098c40a3cab8743bd749.pdf",
-            "mimeType": "application/pdf",
-            "title": "Documento 1"
-        }, {
-            "description": "Credencial de identidad de la Ciudad de Buenos Aires",
-            "extension": "pdf",
-            "hash": "23203f9264161714cdb8d2f474b9b641e6a735f8cea4098c40a3cab8743bd749",
-            "localDownloadPath": "/data/user/0/com.quarkid/files/quarkid_fs/did_quarkid_zksync_EiAauMsrxbK8t670y8l8GKYMEU6UUuxZDwly0wHXoL2I_Q/.pdf",
-            "mimeType": "application/pdf",
-            "title": "Documento 2"
-        }, {
-            "description": "Credencial de identidad de la Ciudad de Buenos Aires",
-            "extension": "pdf",
-            "hash": "23203f9264161714cdb8d2f474b9b641e6a735f8cea4098c40a3cab8743bd749",
-            "localDownloadPath": "/data/user/0/com.quarkid/files/quarkid_fs/did_quarkid_zksync_EiAauMsrxbK8t670y8l8GKYMEU6UUuxZDwly0wHXoL2I_Q/23203f9264161714cdb8d2f474b9b641e6a735f8cea4098c40a3cab8743bd749.pdf",
-            "mimeType": "application/pdf",
-            "title": "Documento 3"
-        }]
-        */
-    if (fileAttachments.length === 1) {
-      setHasOneAttachment(true);
-    } else {
-      setHasOneAttachment(false);
-    }
-
-    if (fileAttachments.length !== 0) {
-      setAttachments(fileAttachments);
-      setHasAttachments(true);
-    }
-
-    let pdfFilesPaths = [];
-    for (let att of fileAttachments) {
-      pdfFilesPaths.push(att.localDownloadPath);
-    }
-    setPdfFiles(pdfFilesPaths);
-  };
+  const attachmentPlugin = new ExtrimianVCAttachmentAgentPlugin({
+    attachmentStorage: new AttachmentFileStorage(),
+  });
 
   useEffect(() => {
-    setIsDocAvailable(route.params?.isFromPresentCredential);
-    fetchAttachments();
-  }, []);
+    const fetchOperationalDid = async () => {
+      if (did?.current) { // 'did' is state.did from the store
+        try {
+          const opDid = await did.current();
+          setOperationalDidString(opDid?.value || null);
+        } catch (error) {
+          console.error("Error fetching operational DID:", error);
+          setOperationalDidString(null);
+        }
+      } else {
+        setOperationalDidString(null);
+      }
+    };
+    fetchOperationalDid();
+  }, [did]);
 
-  const idCredential = useMemo(() => {
-    const splitId = currentCredential.data?.id.split("/");
-    return splitId[splitId.length - 1];
+  useEffect(() => {
+    let isOwner = false;
+    if (currentCredential?.data && operationalDidString) {
+      if (currentCredential.data.credentialStatus?.type === "BRC52RevocationStatus2024") {
+        const issuer = currentCredential.data.issuer;
+        if (typeof issuer === 'string' && issuer === operationalDidString) {
+          isOwner = true;
+        } else if (typeof issuer === 'object' && issuer?.id === operationalDidString) {
+          isOwner = true;
+        }
+      }
+    }
+    setOwner(isOwner);
+  }, [currentCredential, operationalDidString]);
+
+  useEffect(() => {
+    // This existing useEffect sets currentCredential
+    const vcFromParams = route.params?.credential;
+    if (vcFromParams) {
+      setCurrentCredential(vcFromParams);
+    } else if (route.params?.credentialId) {
+      credential.get(route.params.credentialId).then(foundVc => {
+        if (foundVc) {
+          setCurrentCredential(foundVc);
+        }
+      });
+    }
+  }, [route.params?.credential, route.params.credentialId, credential]);
+
+  useEffect(() => {
+    // New useEffect to fetch BSV status when currentCredential is set and is BRC52 type
+    if (currentCredential && currentCredential.data.credentialStatus?.type === "BRC52RevocationStatus2024") {
+      setBsvStatus(i18n.t("credentialDetailsScreen.bsvStatusLoading", "Loading BSV Status..."));
+      credential.getBsvCredentialStatus(currentCredential.data.id)
+        .then(status => {
+          setBsvStatus(status || i18n.t("credentialDetailsScreen.bsvStatusUnknown", "Unknown"));
+        })
+        .catch(error => {
+          console.error("Error fetching BRC52 status in component:", error);
+          setBsvStatus(i18n.t("credentialDetailsScreen.bsvStatusError", "Error fetching status"));
+        });
+    } else {
+      setBsvStatus(null); // Reset if not BRC52 or currentCredential is null
+    }
+  }, [currentCredential, credential]);
+  
+  useEffect(() => {
+    async function getAttachments() {
+      if (currentCredential) {
+        const result = await attachmentPlugin.getAttachments({
+          vc: currentCredential.data,
+        });
+
+        setHasAttachments(result && result.length > 0);
+        setHasOneAttachment(result && result.length === 1);
+        setPdfFiles(result);
+        setAttachments(result);
+
+        if (result && result.length > 0) {
+          result.forEach((element) => {
+            if (
+              element &&
+              element.content &&
+              element.content.type &&
+              element.content.type.startsWith("application/pdf")
+            ) {
+              setIsDocAvailable(true);
+            }
+          });
+        }
+      }
+    }
+    getAttachments();
   }, [currentCredential]);
 
-  const media = useMemo(() => {
-    return currentCredential.display?.properties
+  const currentCredentialProperties: CredentialDetailsProperties[] =
+    useMemo(() => {
+      let temp: CredentialDetailsProperties[] = [];
+
+      // Add BSV Status if available and relevant
+      if (bsvStatus && currentCredential?.data.credentialStatus?.type === "BRC52RevocationStatus2024") {
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.bsvStatusLabel", "BSV Chain Status"),
+          value: bsvStatus,
+        });
+      }
+
+      if (currentCredential?.data?.issuer) {
+        const issuer = currentCredential.data.issuer;
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.issuer"),
+          value: typeof issuer === "string" ? issuer : issuer.name || issuer.id,
+        });
+      }
+
+      if (currentCredential?.data?.issuanceDate) {
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.issuanceDate"),
+          value: new Date(
+            currentCredential.data.issuanceDate
+          ).toLocaleDateString(),
+        });
+      }
+      if (currentCredential?.data?.expirationDate) {
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.expirationDate"),
+          value: new Date(
+            currentCredential.data.expirationDate
+          ).toLocaleDateString(),
+        });
+      }
+      // Avoid duplicating if status is already shown as BSV status
+      if (currentCredential?.data?.credentialStatus && currentCredential?.data.credentialStatus?.type !== "BRC52RevocationStatus2024") { 
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.statusType"),
+          value: currentCredential.data.credentialStatus.type,
+        });
+        temp.push({
+          label: i18n.t("credentialDetailsScreen.statusId"),
+          value: currentCredential.data.credentialStatus.id,
+        });
+      }
+
+      const images = currentCredential?.display?.properties
+        ?.map((prop) => {
+          const value = currentCredential?.credentialSubject[prop.path?.[0]];
+          if (validator.isDataURI(value) || isImgUrl(value)) {
+            return {
+              label: prop.label,
+              value,
+            };
+          }
+        })
+        .filter((prop) => prop);
+
+      if (currentCredential?.credentialSubject) {
+        Object.keys(currentCredential.credentialSubject).forEach((key) => {
+          if (key !== "id" && key !== "type" && key !== "isRelatedTo") {
+            const value = currentCredential.credentialSubject[key];
+            // Skip if it's already processed as an image by the images logic above
+            if (images?.find((img) => img.value === value && currentCredential?.display?.properties?.find(p => p.path?.[0] === key && p.label === img.label))) return; 
+            const field = formatField(key, value);
+            temp.push(field);
+          }
+        });
+      }
+
+      return temp;
+    }, [currentCredential, theme.color.secondary, bsvStatus]);
+
+  const images = useMemo(() => {
+    return currentCredential?.display?.properties
       ?.map((prop) => {
-        const value = formatField(currentCredential.data, prop);
+        const value = currentCredential?.credentialSubject[prop.path?.[0]];
         if (validator.isDataURI(value) || isImgUrl(value)) {
           return {
             label: prop.label,
@@ -210,49 +295,13 @@ const CredentialDetails = ({ navigation, route }) => {
     navigation.goBack();
   }, []);
 
-  /*
-    const DocumentButton = () => {
-        return (
-            <TouchableOpacityStyled
-                onPress={() => {
-                    navigation.navigate('DocumentVisualization', {
-                        pdfFiles,
-                        hasOneAttachment,
-                        attachments,
-                        title: currentCredential.display?.title?.fallback
-                    })
-                }}
-            >
-                <Container style={{marginBottom: -15}}>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginLeft: 20}}>
-                        <HeaderText
-                            style={{
-                                fontFamily: 'Manrope-Regular',
-                                fontSize: 15,
-                                color: buttonColor,
-                                marginLeft: 7,
-                                alignSelf: 'center',
-                            }}
-                        >
-                            {hasOneAttachment ? attachments[0]?.title : i18n.t('credentialDetailsScreen.viewRelatedDocuments')}
-                        </HeaderText>
-                    </View>
-                    <HeaderText>
-                        <ForwardIcon color={buttonColor}/>
-                    </HeaderText>
-                </Container>
-            </TouchableOpacityStyled>
-        )
-    }
-    */
-
   const Document = ({ attachment, position }) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          !isDocAvailable &&
+          !isDocAvailable && // This condition seems incorrect, should probably be isDocAvailable or based on attachment type
           navigation.navigate("DocumentVisualization", {
-            pdfFiles,
+            pdfFiles, // This seems to imply all attachments are PDFs for visualization
             hasOneAttachment,
             attachments,
             position,
@@ -269,370 +318,184 @@ const CredentialDetails = ({ navigation, route }) => {
               alignItems: "center",
             }}
           >
-            <View style={{ flex: 1, flexDirection: "row" }}>
-              <MaterialIconsStyled
-                name="insert-drive-file"
-                size={24}
-                color={buttonColor}
-              />
-              <View
+            <View
+              style={{
+                width: "90%",
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(193, 193, 198, 0.5)",
+                paddingBottom: 4,
+                paddingLeft: 10,
+              }}
+            >
+              <Text
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: 4,
-                  paddingLeft: 10,
+                  fontSize: 16,
+                  color: "#505E70",
+                  fontFamily: "Manrope-Bold",
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: "#505E70",
-                    fontFamily: "Manrope-Bold",
-                  }}
-                >
-                  {attachment.title}
-                </Text>
-              </View>
+                {attachment.title}
+              </Text>
             </View>
-            <HeaderText style={{ marginTop: Platform.OS === "ios" ? 20 : 0 }}>
-              <ForwardIcon color="#505E70" />
-            </HeaderText>
           </View>
+          <HeaderText style={{ marginTop: Platform.OS === "ios" ? 20 : 0 }}>
+            <ForwardIcon color="#505E70" />
+          </HeaderText>
         </DocumentView>
       </TouchableOpacity>
     );
   };
 
+  if (!currentCredential) {
+    return (
+      <BasicLayout
+        onBack={() => navigation.goBack()}
+        setContentHeight={setContentHeight}
+      >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={theme.color.primary} />
+        </View>
+      </BasicLayout>
+    );
+  }
+
   return (
     <BasicLayout
-      title={i18n.t("credentialDetailsScreen.title")}
-      contentStyle={{
-        paddingTop: 10,
-      }}
-      backText={false}
       onBack={() => navigation.goBack()}
       setContentHeight={setContentHeight}
     >
       <Popup
-        navigation={navigation}
-        title={i18n.t("credentialDetailsScreen.remove")}
-        description={i18n.t("credentialDetailsScreen.removeMessage")}
-        acceptHandler={() => {
-          deleteCredential(currentCredential.data.id);
-        }}
-        declineHandler={() => {
-          setDeletePopupVisible(false);
-        }}
+        title={i18n.t("error")}
+        description={i18n.t("errorDescription")}
+        visible={popupVisible}
+        declineHandler={() => setPopupVisible(false)}
+      />
+      <Popup
+        title={i18n.t("settingsScreen.mainSettings.removeCredentialTitle")}
+        description={i18n.t(
+          "settingsScreen.mainSettings.removeCredentialDescription"
+        )}
         visible={deletePopupVisible}
+        declineHandler={() => setDeletePopupVisible(false)}
+        acceptHandler={() => deleteCredential(currentCredential.data.id)}
         warning={true}
       />
 
-      <DataWrapper style={{ height: height - 320 }}>
-        <CredentialItem
-          style={{
-            backgroundColor: currentCredential?.styles?.background?.color,
-            borderRadius: 15,
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-          }}
+      <DataWrapper>
+        <ImageBkgStyled
+          source={
+            currentCredential?.styles?.background?.color
+              ? null
+              : currentCredential.styles?.hero?.uri && {
+                  uri: currentCredential.styles.hero.uri,
+                }
+          }
+          imageStyle={{ borderRadius: 15 }}
+          style={
+            currentCredential?.styles?.background?.color && {
+              backgroundColor: currentCredential.styles.background.color,
+              borderRadius: 15,
+            }
+          }
         >
-          {/* <Brightness style={{ width: '100%', position: 'absolute', top: 25, right: 40, opacity: 0.5 }} amount={0}>
-                        <ImageStyled
-                            style={{ width: '100%', height: 100 }}
-                            source={{ uri: logo.enabled ? currentCredential?.styles?.thumbnail?.uri : 'https://i.ibb.co/Krv9jRg/Quark-ID-iso.png' }}
-                        />
-                    </Brightness> */}
-          <ImageBkgStyled
-            imageStyle={{}}
-            style={{ width: "100%", alignItems: "center" }}
-            source={{ uri: currentCredential?.styles?.hero?.uri }}
-          >
-            {currentCredential?.styles?.thumbnail?.uri && (
-              <ViewStyled
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 100,
-                  height: 40,
-                  width: 40,
-                  margin: 30,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ImageStyled
-                  source={{
-                    uri: logo.enabled
-                      ? currentCredential?.styles?.thumbnail?.uri
-                      : "https://i.ibb.co/Krv9jRg/Quark-ID-iso.png",
-                    cache: "force-cache",
-                  }}
-                  style={{ height: 30, width: 30 }}
-                  resizeMode="contain"
-                  onLoad={(e) => {
-                    // setLogo((logo) => ({
-                    //     ...logo,
-                    //     width: Number(((35 * e.nativeEvent.source.width) / e.nativeEvent.source.height).toFixed(0)),
-                    //     height: 35,
-                    //     opacity: 1,
-                    // }));
-                  }}
-                  onError={(e) => {
-                    setLogo((logo) => ({
-                      ...logo,
-                      enabled: false,
-                    }));
-                  }}
-                />
-              </ViewStyled>
-            )}
-          </ImageBkgStyled>
-        </CredentialItem>
+          <Brightness contrast={1.1} brightness={1.1}>
+            <CredentialAbstract
+              disabled
+              credential={currentCredential}
+            />
+          </Brightness>
+        </ImageBkgStyled>
 
-        {/* <CredentialAbstract
-                    disabled
-                    credential={currentCredential}
-                    // style={{
-                    //     marginVertical: 10,
-                    // }}
-                    children={
-                        route.params?.remove ? (
-                            <TouchableOpacityStyled onPress={() => setDeletePopupVisible(true)}>
-                                <IoniconsStyled name="md-trash" size={30} color={transparentize(0.5, styles?.text?.color || 'black')} />
-                            </TouchableOpacityStyled>
-                        ) : (
-                            <></>
-                        )
-                    }
-                    onLayout={(event) => {
-                        const { height } = event.nativeEvent.layout;
-                        setCredentialHeight(height.toFixed(0));
-                    }}
-                /> */}
         <Info>
-          {/* <Titles
-                        onLayout={(event) => {
-                            const { height } = event.nativeEvent.layout;
-                            setTitlesHeight(height.toFixed(0));
-                        }}
-                    > */}
-          {/* {(currentCredential.data?.issuer?.id || currentCredential?.data?.issuer) && (didVisible ? <Description style={{ fontSize: 12 }}>{currentCredential?.data?.issuer?.id || currentCredential?.data?.issuer}</Description> : <DidSquare underlayColor={theme.color.tertiary} onPress={() => { setDidVisible(true) }}><Description style={{ color: "white" }}>{"did"}</Description></DidSquare>)} */}
-
-          {/* {currentCredential.display?.title && (
-                            <Title
-                                style={{
-                                    color: theme.color.secondary,
-                                }}
-                            >
-                                {formatField(currentCredential.data, currentCredential.display.title)}
-                            </Title>
-                        )} */}
-
-          {/* {currentCredential.display?.subtitle && <SubTitle>{formatField(currentCredential.data, currentCredential.display.subtitle)}</SubTitle>}
-
-                        {currentCredential.display?.description && (
-                            <Description>{formatField(currentCredential.data, currentCredential.display.description)}</Description>
-                        )} */}
-          {/* </Titles> */}
-          <ListWrapper
-          // style={{
-          //     height: contentHeight - titlesHeight - credentialHeight - 70,
-          // }}
-          >
-            <ListLayout
-              showsVerticalScrollIndicator={false}
-              data={properties}
-              EmptyComponent={() => <></>}
-              contentContainerStyle={{
-                backgroundColor: "white",
-                paddingHorizontal: 0,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-              }}
-              ListHeaderComponent={() => {
-                return currentCredential.display?.title ? (
-                  <>
-                    <HeaderText
-                      style={{
-                        color: theme.color.secondary,
-                        marginHorizontal: 20,
-                      }}
-                    >
-                      {formatField(
-                        currentCredential.data,
-                        currentCredential.display?.title
-                      )}
-                    </HeaderText>
-                    <Separator
-                      style={{ backgroundColor: theme.color.primary }}
-                    />
-                    {currentCredential?.display?.subtitle && (
-                      <HeaderText
+          {currentCredentialProperties.length > 0 && (
+            <Titles
+              style={{ borderBottomColor: "gray", borderBottomWidth: 0 }}
+            >
+              <FlatListStyled
+                data={currentCredentialProperties}
+                ItemSeparatorComponent={() => (
+                  <Separator
+                    style={{ backgroundColor: theme.color.secondary }}
+                  />
+                )}
+                keyExtractor={(item) => item.label}
+                renderItem={({ item }) => (
+                  <CredentialItem
+                    style={{
+                      paddingVertical: 10,
+                      borderBottomColor: "rgba(193, 193, 198, 0.5)",
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <Container>
+                      <Label
                         style={{
                           color: theme.color.secondary,
-                          marginHorizontal: 20,
-                          fontSize: 15,
-                          fontFamily: "Manrope-SemiBold",
                         }}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
                       >
-                        {formatField(
-                          currentCredential.data,
-                          currentCredential.display?.subtitle
-                        )}
-                      </HeaderText>
-                    )}
-                    <Separator
-                      style={{ backgroundColor: theme.color.primary }}
-                    />
-                    <HeaderText
+                        {item.label}
+                      </Label>
+                    </Container>
+                    <Value
                       style={{
-                        color: theme.color.secondary,
-                        marginHorizontal: 20,
-                        fontSize: 12,
-                        fontFamily: "Manrope-Regular",
+                        color:
+                          currentCredential?.styles?.text?.color ||
+                          lighten(0.2, "black"),
                       }}
-                      ellipsizeMode="tail"
-                    >
-                      {formatField(
-                        currentCredential.data,
-                        currentCredential.display?.description
-                      )}
-                    </HeaderText>
-                    <Separator
-                      style={{ backgroundColor: theme.color.primary }}
-                    />
-                  </>
-                ) : (
-                  <></>
-                );
-              }}
-              RenderItemComponent={({ item, index }) => {
-                return (
-                  <Container>
-                    <HeaderText
-                      style={{
-                        fontFamily: "Manrope-Regular",
-                        fontSize: 15,
-                        color: theme.color.secondary,
-                        marginLeft: 20,
-                        width: "30%",
-                      }}
-                      numberOfLines={3}
-                    >
-                      {item.label}
-                    </HeaderText>
-                    <HeaderText
-                      style={{
-                        fontFamily: "Manrope-SemiBold",
-                        fontSize: 15,
-                        color: theme.color.secondary,
-                        width: "55%",
-                        textAlign: "right",
-                      }}
-                      ellipsizeMode="tail"
-                      numberOfLines={3}
                     >
                       {item.value}
-                    </HeaderText>
-                  </Container>
-                );
+                    </Value>
+                  </CredentialItem>
+                )}
+              />
+            </Titles>
+          )}
+          {images && images.length > 0 && (
+            <ListWrapper>
+              <ListLayout
+                title={i18n.t("images")}
+                data={images}
+                horizontal
+                renderItem={({ item }) => (
+                  <ImageItem navigation={navigation} item={item} />
+                )}
+              />
+            </ListWrapper>
+          )}
+          {hasAttachments && (
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderTopColor: "rgba(193, 193, 198, 0.5)",
+                marginTop: 10,
+                paddingTop: 10,
               }}
-              ItemSeparatorComponent={() => (
-                <Separator style={{ backgroundColor: theme.color.primary }} />
-              )}
-              ListFooterComponent={() => {
-                return (
-                  <>
-                    <Separator
-                      style={{ backgroundColor: theme.color.primary }}
-                    />
-                    <Container style={{ marginBottom: -15 }}>
-                      <HeaderText
-                        style={{
-                          fontFamily: "Manrope-Regular",
-                          fontSize: 15,
-                          color: theme.color.secondary,
-                          marginLeft: 20,
-                          width: "30%",
-                          marginBottom: 10,
-                        }}
-                      >
-                        ID
-                      </HeaderText>
-                      <HeaderText
-                        style={{
-                          fontFamily: "Manrope-SemiBold",
-                          fontSize: 15,
-                          marginRight: 20,
-                          color: theme.color.secondary,
-                          width: "55%",
-                          textAlign: "right",
-                        }}
-                        numberOfLines={3}
-                        textAlign="center"
-                      >
-                        {idCredential}
-                      </HeaderText>
-                    </Container>
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: "Manrope-Bold",
+                  color: "#131F3C",
+                  paddingBottom: 10,
+                }}
+              >
+                {i18n.t("documents")}
+              </Text>
+              {attachments.map((attachment, index) => (
+                <Document
+                  key={index}
+                  attachment={attachment}
+                  position={index}
+                />
+              ))}
+            </View>
+          )}
 
-                    {hasAttachments ? (
-                      <>
-                        {hasOneAttachment ? null : (
-                          <View>
-                            <Separator
-                              style={{ backgroundColor: theme.color.primary }}
-                            />
-                            <HeaderText
-                              style={{
-                                fontFamily: "Manrope-SemiBold",
-                                fontSize: 18,
-                                marginLeft: 20,
-                                color: theme.color.secondary,
-                                width: "100%",
-                                textAlign: "left",
-                              }}
-                              numberOfLines={3}
-                              textAlign="center"
-                            >
-                              {i18n.t(
-                                "credentialDetailsScreen.viewRelatedDocuments"
-                              )}
-                            </HeaderText>
-                            <Separator
-                              style={{ backgroundColor: theme.color.primary }}
-                            />
-                          </View>
-                        )}
-
-                        {attachments.map((att, index) => (
-                          <View style={{ marginTop: -2 }}>
-                            <Separator
-                              style={{ backgroundColor: theme.color.primary }}
-                            />
-                            <Document attachment={att} position={index} />
-                          </View>
-                        ))}
-                      </>
-                    ) : null}
-
-                    {media?.map((item, index) => (
-                      <ImageItem
-                        navigation={navigation}
-                        item={item}
-                        key={index}
-                      />
-                    ))}
-                  </>
-                );
-              }}
-            />
-          </ListWrapper>
-          {remove && (
+          {operationalDidString && currentCredential?.data?.issuer && (operationalDidString === currentCredential.data.issuer ||
+          (typeof currentCredential.data.issuer !== "string" &&
+            operationalDidString === currentCredential.data.issuer?.id)) ? (
+            <></>
+          ) : (
             <TouchableOpacityStyled
               onPress={() => {
                 setDeletePopupVisible(true);
@@ -657,18 +520,18 @@ const CredentialDetails = ({ navigation, route }) => {
   );
 };
 
-const FlatListStyled = styled(FlatList)``;
-const MaterialIconsStyled = styled(MaterialIcons)``;
+const FlatListStyled = styled(FlatList)``; // Note: Backticks are used here
+const MaterialIconsStyled = styled(MaterialIcons)``; // Note: Backticks are used here
 
-const TouchableOpacityStyled = styled(TouchableOpacity)``;
-const ImageBkgStyled = styled(ImageBackground)``;
-const ViewStyled = styled.View``;
+const TouchableOpacityStyled = styled(TouchableOpacity)``; // Note: Backticks are used here
+const ImageBkgStyled = styled(ImageBackground)``; // Note: Backticks are used here
+const ViewStyled = styled.View``; // Note: Backticks are used here
 
-const Info = styled.View`
+const Info = styled.View` 
   width: 95%;
 `;
 
-const CredentialItem = styled.View``;
+const CredentialItem = styled.View``; 
 
 const Separator = styled.View`
   width: 100%;

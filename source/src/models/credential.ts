@@ -43,6 +43,7 @@ type Issuer =
 enum CredentialStatusType {
   RevocationList2020Status = "RevocationList2020Status",
   CredentialStatusList2017 = "CredentialStatusList2017",
+  BRC52RevocationStatus2024 = "BRC52RevocationStatus2024",
 }
 
 interface CredentialStatus {

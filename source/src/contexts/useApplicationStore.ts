@@ -479,6 +479,31 @@ export const useApplicationStore = create<ApplicationStoreProps>(
       get: async (id: string) => {
         return get().credentials.find(({ data }) => data.id === id);
       },
+      getBsvCredentialStatus: async (credentialUniqueId: string): Promise<string | null> => {
+        const vcWithInfo = get().credentials.find(c => c.data.id === credentialUniqueId);
+
+        if (vcWithInfo && vcWithInfo.data.credentialStatus?.type === "BRC52RevocationStatus2024") {
+          const statusIdentifier = vcWithInfo.data.credentialStatus.id; // This ID must be resolvable by the backend
+          const VCSL_API_ENDPOINT = agentConfig.vcslApiEndpoint || "http://localhost:8000/vcsl"; // Define vcslApiEndpoint in agentConfig
+          
+          try {
+            console.log(`Fetching BRC52 status for ID: ${statusIdentifier} from ${VCSL_API_ENDPOINT}/status/bsv/${encodeURIComponent(statusIdentifier)}`);
+            const response = await fetch(`${VCSL_API_ENDPOINT}/status/bsv/${encodeURIComponent(statusIdentifier)}`);
+            if (!response.ok) {
+              console.error(`Error fetching BRC52 status: ${response.status} ${response.statusText}`);
+              const errorBody = await response.text();
+              console.error(`Error body: ${errorBody}`);
+              return "error_fetching_status";
+            }
+            const statusData = await response.json();
+            return statusData.status; // e.g., "active", "revoked", "unknown"
+          } catch (error) {
+            console.error("Network or other error fetching BRC52 status:", error);
+            return "error_network";
+          }
+        }
+        return null; // Not a BRC52 credential or no status info
+      },
       refresh: async () => {
         const credentials =
           await get().agent.vc.getVerifiableCredentialsWithInfo();
