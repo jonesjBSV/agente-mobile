@@ -11,7 +11,7 @@
         "env": {
           "NPM_FLAGS": "--legacy-peer-deps"
         },
-        "gradleCommand": ":app:assembleDebug --stacktrace --info"
+        "gradleCommand": ":app:assembleDebug --stacktrace --info --scan"
       }
     },
     "preview": {
@@ -20,7 +20,7 @@
         "env": {
           "NPM_FLAGS": "--legacy-peer-deps"
         },
-        "gradleCommand": ":app:assembleRelease --stacktrace --info"
+        "gradleCommand": ":app:assembleRelease --stacktrace --info --scan"
       }
     },
     "production": {
@@ -29,7 +29,7 @@
         "env": {
           "NPM_FLAGS": "--legacy-peer-deps"
         },
-        "gradleCommand": ":app:bundleRelease --stacktrace --info"
+        "gradleCommand": ":app:bundleRelease --stacktrace --info --scan"
       }
     }
   },
