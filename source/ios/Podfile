@@ -49,9 +49,14 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '12.4'
 install! 'cocoapods',
   :deterministic_uuids => false
 
+
 target 'QuarkID' do
-  use_expo_modules!
+  # Explicitly define boost using your local podspec
+  pod 'boost', :path => './boost-src/boost_1_76_0/'
+
+  use_expo_modules!(:exclude => ['boost'])
   config = use_native_modules!
+
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
 
@@ -63,7 +68,8 @@ target 'QuarkID' do
     :hermes_enabled => flags[:hermes_enabled] || podfile_properties['expo.jsEngine'] == 'hermes',
     :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
-    :app_path => "#{Dir.pwd}/.."
+    :app_path => "#{Dir.pwd}/..",
+    :exclude_pods => ['boost'] # Exclude boost here as well
   )
 
   
