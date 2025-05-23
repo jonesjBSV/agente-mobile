@@ -57,8 +57,10 @@ target 'QuarkID' do
   use_expo_modules!(:exclude => ['boost'])
   config = use_native_modules!
 
-
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
+  # The following line is duplicated from above, so I'm removing one instance of it.
+  # config = use_native_modules!
+  
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -81,6 +83,118 @@ target 'QuarkID' do
   # end
 
   post_install do |installer|
+    boost_header_path = '"$(PODS_PROJECT_ROOT)/boost-src/boost_1_76_0"' # Reverted to relative path
+    pods_requiring_boost_headers = ['QuarkID', 'ReactCommon', 'RCT-Folly', 'React-cxxreact', 'DoubleConversion', 'glog']
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # 1. Set IPHONEOS_DEPLOYMENT_TARGET for all pods
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+
+        # 2. Add Boost header path to specific dependent pods + main target
+        if pods_requiring_boost_headers.include?(target.name)
+          # Robustly update HEADER_SEARCH_PATHS
+          hsp = Array(config.build_settings['HEADER_SEARCH_PATHS'])
+          hsp.delete('$(inherited)') # Remove if exists to ensure it's at the start
+          hsp.delete(boost_header_path) # Remove if exists to avoid duplicates before re-adding
+          config.build_settings['HEADER_SEARCH_PATHS'] = ['$(inherited)'] + hsp + [boost_header_path]
+          config.build_settings['HEADER_SEARCH_PATHS'].uniq! # Ensure all paths are unique
+
+          # Robustly update USER_HEADER_SEARCH_PATHS
+          uhsp = Array(config.build_settings['USER_HEADER_SEARCH_PATHS'])
+          uhsp.delete('$(inherited)')
+          uhsp.delete(boost_header_path)
+          config.build_settings['USER_HEADER_SEARCH_PATHS'] = ['$(inherited)'] + uhsp + [boost_header_path]
+          config.build_settings['USER_HEADER_SEARCH_PATHS'].uniq!
+
+          # Disable header maps for these pods, except potentially Folly if it relies on them
+          unless target.name == 'RCT-Folly'
+            config.build_settings['USE_HEADERMAP'] = 'NO'
+          end
+        end
+
+        # 3. Set C++ standard for specific C++ heavy pods
+        # Configure C++ standards and Folly/fmt settings
+        if ['RCT-Folly', 'ReactCommon', 'React-cxxreact'].include?(target.name)
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+          config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+
+          # GCC_PREPROCESSOR_DEFINITIONS for RN core pods
+          gcc_defs = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          gcc_defs.delete_if { |flag| flag.is_a?(String) && (flag.start_with?('FOLLY_HAS_COROUTINES=') || flag.start_with?('FMT_HAS_CHAR8_T=') || flag.start_with?('BOOST_SYSTEM_NO_DEPRECATED=') || flag.start_with?('_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION=')) }
+          gcc_defs << 'FOLLY_HAS_COROUTINES=0'
+          gcc_defs << 'FMT_HAS_CHAR8_T=0' # Force fmt to not use char8_t when included by C++17 pods
+          gcc_defs << 'BOOST_SYSTEM_NO_DEPRECATED=1'
+          gcc_defs << '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION=1'
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = gcc_defs.uniq
+
+          # OTHER_CFLAGS for RN core pods
+          other_cflags = config.build_settings['OTHER_CFLAGS'] ||= ['$(inherited)']
+          other_cflags.delete_if { |flag| flag.is_a?(String) && (flag == '-DFOLLY_HAS_COROUTINES=0' || flag == '-DFMT_HAS_CHAR8_T=0' || flag == '-DBOOST_SYSTEM_NO_DEPRECATED=1' || flag == '-D_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION=1') }
+          other_cflags << '-DFOLLY_HAS_COROUTINES=0'
+          other_cflags << '-DFMT_HAS_CHAR8_T=0'
+          other_cflags << '-DBOOST_SYSTEM_NO_DEPRECATED=1'
+          other_cflags << '-D_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION=1'
+          config.build_settings['OTHER_CFLAGS'] = other_cflags.uniq
+
+        elsif target.name == 'boost'
+            # Settings for the custom Boost pod
+            config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+            config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+            
+            gcc_defs_boost = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+            gcc_defs_boost.delete_if { |flag| flag.is_a?(String) && flag.start_with?('BOOST_SYSTEM_NO_DEPRECATED=') }
+            gcc_defs_boost << 'BOOST_SYSTEM_NO_DEPRECATED=1'
+            config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = gcc_defs_boost.uniq
+
+            other_cflags_boost = config.build_settings['OTHER_CFLAGS'] ||= ['$(inherited)']
+            other_cflags_boost.delete_if { |flag| flag.is_a?(String) && flag == '-DBOOST_SYSTEM_NO_DEPRECATED=1' }
+            other_cflags_boost << '-DBOOST_SYSTEM_NO_DEPRECATED=1'
+            config.build_settings['OTHER_CFLAGS'] = other_cflags_boost.uniq
+
+          elsif target.name == 'fmt'
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+          config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+          
+          # GCC_PREPROCESSOR_DEFINITIONS for fmt pod
+          gcc_defs = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          gcc_defs.delete_if { |flag| flag.is_a?(String) && flag.start_with?('FMT_HAS_CHAR8_T=') }
+          gcc_defs << 'FMT_HAS_CHAR8_T=0' # Force fmt to not use char8_t for its own compilation
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = gcc_defs.uniq
+
+          # OTHER_CFLAGS for fmt pod
+          other_cflags = config.build_settings['OTHER_CFLAGS'] ||= ['$(inherited)']
+          other_cflags.delete_if { |flag| flag.is_a?(String) && flag == '-DFMT_HAS_CHAR8_T=0' }
+          other_cflags << '-DFMT_HAS_CHAR8_T=0'
+          config.build_settings['OTHER_CFLAGS'] = other_cflags.uniq
+
+          # OTHER_CPLUSPLUSFLAGS for fmt pod
+          other_cppflags = config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(inherited)']
+          other_cppflags.delete_if { |flag| flag.is_a?(String) && flag == '-DFMT_HAS_CHAR8_T=0' }
+          other_cppflags << '-DFMT_HAS_CHAR8_T=0'
+          config.build_settings['OTHER_CPLUSPLUSFLAGS'] = other_cppflags.uniq
+        end
+
+        # For RCT-Folly, add its own 'folly' subdirectory to search paths to find nested headers
+        if target.name == 'RCT-Folly'
+          folly_internal_path = '"${PODS_TARGET_SRCROOT}"' # Point to the root of RCT-Folly pod
+          # Robustly update HEADER_SEARCH_PATHS
+          hsp_folly = Array(config.build_settings['HEADER_SEARCH_PATHS'])
+          hsp_folly.delete('$(inherited)')
+          hsp_folly.delete(folly_internal_path)
+          config.build_settings['HEADER_SEARCH_PATHS'] = ['$(inherited)'] + hsp_folly + [folly_internal_path]
+          config.build_settings['HEADER_SEARCH_PATHS'].uniq!
+
+          # Robustly update USER_HEADER_SEARCH_PATHS
+          uhsp_folly = Array(config.build_settings['USER_HEADER_SEARCH_PATHS'])
+          uhsp_folly.delete('$(inherited)')
+          uhsp_folly.delete(folly_internal_path)
+          config.build_settings['USER_HEADER_SEARCH_PATHS'] = ['$(inherited)'] + uhsp_folly + [folly_internal_path]
+          config.build_settings['USER_HEADER_SEARCH_PATHS'].uniq!
+        end
+      end
+    end
+
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
 

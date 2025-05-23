@@ -1,3 +1,198 @@
+diff --git a/node_modules/react-native/Libraries/Components/AccessibilityInfo/legacySendAccessibilityEvent.js b/node_modules/react-native/Libraries/Components/AccessibilityInfo/legacySendAccessibilityEvent.js
+new file mode 100644
+index 0000000..2bda93c
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/AccessibilityInfo/legacySendAccessibilityEvent.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific legacySendAccessibilityEvent.ios.js or legacySendAccessibilityEvent.android.js
++module.exports = require('./legacySendAccessibilityEvent');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Components/MaskedView/MaskedViewIOS.js b/node_modules/react-native/Libraries/Components/MaskedView/MaskedViewIOS.js
+new file mode 100644
+index 0000000..4326c16
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/MaskedView/MaskedViewIOS.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific MaskedViewIOS.ios.js or MaskedViewIOS.android.js
++module.exports = require('./MaskedViewIOS');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Components/ProgressBarAndroid/ProgressBarAndroid.js b/node_modules/react-native/Libraries/Components/ProgressBarAndroid/ProgressBarAndroid.js
+new file mode 100644
+index 0000000..d2bd94b
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/ProgressBarAndroid/ProgressBarAndroid.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific ProgressBarAndroid.android.js or ProgressBarAndroid.ios.js
++module.exports = require('./ProgressBarAndroid');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Components/ProgressViewIOS/ProgressViewIOS.js b/node_modules/react-native/Libraries/Components/ProgressViewIOS/ProgressViewIOS.js
+new file mode 100644
+index 0000000..c735874
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/ProgressViewIOS/ProgressViewIOS.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific ProgressViewIOS.ios.js or ProgressViewIOS.android.js
++module.exports = require('./ProgressViewIOS');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Components/ToastAndroid/ToastAndroid.js b/node_modules/react-native/Libraries/Components/ToastAndroid/ToastAndroid.js
+new file mode 100644
+index 0000000..f425d42
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/ToastAndroid/ToastAndroid.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific ToastAndroid.ios.js or ToastAndroid.android.js
++module.exports = require('./ToastAndroid');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Image/Image.js b/node_modules/react-native/Libraries/Image/Image.js
+new file mode 100644
+index 0000000..bd58049
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Image/Image.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific Image.ios.js or Image.android.js
++module.exports = require('./Image');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Modal/ModalInjection.js b/node_modules/react-native/Libraries/Modal/ModalInjection.js
+index 5924f10..7ffaec3 100644
+--- a/node_modules/react-native/Libraries/Modal/ModalInjection.js
++++ b/node_modules/react-native/Libraries/Modal/ModalInjection.js
+@@ -11,5 +11,5 @@
+ import typeof Modal from './Modal';
+ 
+ export default {
+-  unstable_Modal: (null: ?Modal),
++  unstable_Modal: (undefined: ?Modal),
+ };
+diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.js b/node_modules/react-native/Libraries/Network/RCTNetworking.js
+new file mode 100644
+index 0000000..ff09641
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Network/RCTNetworking.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific RCTNetworking.ios.js or RCTNetworking.android.js
++module.exports = require('./RCTNetworking');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Settings/Settings.js b/node_modules/react-native/Libraries/Settings/Settings.js
+new file mode 100644
+index 0000000..b2ad9c3
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Settings/Settings.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific Settings.ios.js or Settings.android.js
++module.exports = require('./Settings');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/StyleSheet/PlatformColorValueTypes.js b/node_modules/react-native/Libraries/StyleSheet/PlatformColorValueTypes.js
+new file mode 100644
+index 0000000..82fb730
+--- /dev/null
++++ b/node_modules/react-native/Libraries/StyleSheet/PlatformColorValueTypes.js
+@@ -0,0 +1,3 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific PlatformColorValueTypes.ios.js or PlatformColorValueTypes.android.js
++module.exports = require('./PlatformColorValueTypes');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Utilities/BackHandler.js b/node_modules/react-native/Libraries/Utilities/BackHandler.js
+new file mode 100644
+index 0000000..1f65461
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Utilities/BackHandler.js
+@@ -0,0 +1,4 @@
++// This file is intentionally simple to allow Metro to resolve
++// the platform-specific BackHandler.ios.js or BackHandler.android.js
++// from this Utilities directory.
++module.exports = require('./BackHandler');
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Utilities/Platform.js b/node_modules/react-native/Libraries/Utilities/Platform.js
+new file mode 100644
+index 0000000..1ee1668
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Utilities/Platform.js
+@@ -0,0 +1,12 @@
++/**
++ * Copyright (c) Meta Platforms, Inc. and affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ *
++ * @flow strict-local
++ */
++
++const Platform = require('./getRNPlatform');
++
++module.exports = Platform;
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Utilities/PlatformChecker.js b/node_modules/react-native/Libraries/Utilities/PlatformChecker.js
+new file mode 100644
+index 0000000..0457dc2
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Utilities/PlatformChecker.js
+@@ -0,0 +1,24 @@
++/**
++ * Copyright (c) Meta Platforms, Inc. and affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ *
++ * @flow strict
++ * @format
++ */
++
++// These values are provided by the native layer.
++// They are NOT general purpose utilities.
++// This is not a public API.
++// Do not use this.
++// TODO: Delete this.
++// @ts-ignore untyped navigator
++const product = typeof navigator !== 'undefined' && navigator.product;
++
++const PlatformChecker = {
++  isAndroid: product === 'ReactNative' && require('./Platform').OS === 'android',
++  isIOS: product === 'ReactNative' && require('./Platform').OS === 'ios',
++};
++
++module.exports = PlatformChecker;
+\ No newline at end of file
+diff --git a/node_modules/react-native/Libraries/Utilities/getRNPlatform.js b/node_modules/react-native/Libraries/Utilities/getRNPlatform.js
+new file mode 100644
+index 0000000..1cb812d
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Utilities/getRNPlatform.js
+@@ -0,0 +1,26 @@
++/**
++ * Copyright (c) Meta Platforms, Inc. and affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ *
++ * @flow strict-local
++ */
++
++import PlatformChecker from './PlatformChecker';
++import PlatformIOS from './Platform.ios';
++import PlatformAndroid from './Platform.android';
++
++let Platform;
++
++if (PlatformChecker.isIOS) {
++  Platform = PlatformIOS;
++} else if (PlatformChecker.isAndroid) {
++  Platform = PlatformAndroid;
++} else {
++  // This is the path for web and other platforms
++  // Jest runs via this path.
++  Platform = PlatformIOS;
++}
++
++export default Platform;
+\ No newline at end of file
 diff --git a/node_modules/react-native/scripts/react_native_pods.rb b/node_modules/react-native/scripts/react_native_pods.rb
 index 48d8b9f..6b2bde5 100644
 --- a/node_modules/react-native/scripts/react_native_pods.rb

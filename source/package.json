@@ -25,7 +25,6 @@
     "@extrimian/one-click-agent-plugin": "0.3.0-0",
     "@extrimian/vc-attachments-agent-plugin": "^0.1.1",
     "@gorhom/bottom-sheet": "^4",
-    "@mattrglobal/node-bbs-signatures": "^0.20.0",
     "@neverdull-agency/expo-unlimited-secure-store": "^1.0.10",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-clipboard/clipboard": "^1.10.0",

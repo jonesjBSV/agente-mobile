@@ -21,7 +21,7 @@ try {
 try {
   const projectRoot = __dirname;
   console.error(`[METRO-ULTRA-DEBUG] Project root for defaultConfig: ${projectRoot}`);
-  
+
   const config = getDefaultConfig(projectRoot);
   console.error('[METRO-ULTRA-DEBUG] Successfully obtained default config.');
 
@@ -60,7 +60,7 @@ try {
       console.error(`[METRO-ULTRA-DEBUG] Error Stack: ${e.stack}`);
       console.error('[METRO-ULTRA-DEBUG] Continuing after fs.existsSync error.');
   }
-  
+
   config.resolver.extraNodeModules['react-native-date-picker'] = dummyDatePickerPath;
   console.error(`[METRO-ULTRA-DEBUG] Alias created: 'react-native-date-picker' -> ${dummyDatePickerPath}`);
 
@@ -71,7 +71,123 @@ try {
   console.error('[METRO-ULTRA-DEBUG] !!! Unrecoverable error in metro.config.js setup !!!');
   console.error(`[METRO-ULTRA-DEBUG] Error Message: ${error.message}`);
   console.error(`[METRO-ULTRA-DEBUG] Error Stack: ${error.stack}`);
-  throw error; 
+  throw error;
 }
 
 console.error('[METRO-ULTRA-DEBUG] End of metro.config.js file reached (after module.exports or throw).');
+
+const exclusionList = require('metro-config/src/defaults/exclusionList');
+const nodeLibs = require('node-libs-react-native');
+
+module.exports = (async () => {
+  const defaultConfig = await getDefaultConfig(__dirname);
+  const { resolver: { sourceExts, assetExts } } = defaultConfig;
+
+  const updatedSourceExts = sourceExts.includes('cjs') ? sourceExts : [...sourceExts, 'cjs'];
+
+  const originalGetTransformOptions = defaultConfig.transformer.getTransformOptions;
+
+  // Restore react-native-svg-transformer
+  defaultConfig.transformer.babelTransformerPath = require.resolve('react-native-svg-transformer');
+
+  defaultConfig.transformer.getTransformOptions = async (
+    entryPoints,
+    metroTransformerOptions, // Contains { dev, hot, platform, projectRoot, ... }
+    getDependenciesOf
+  ) => {
+    console.log('Cascade Debug: metroTransformerOptions received by getTransformOptions:', JSON.stringify(metroTransformerOptions, null, 2));
+    // Specifically log the platform value
+    console.log('Cascade Debug: metroTransformerOptions.platform:', metroTransformerOptions.platform);
+
+    const baseOptions = await originalGetTransformOptions(
+  ) => {
+    const baseOptions = await originalGetTransformOptions(
+      entryPoints,
+      metroTransformerOptions,
+      getDependenciesOf
+    );
+
+    // Ensure platform and other critical options from metroTransformerOptions
+    // are explicitly passed to the preset's options
+    return {
+      ...baseOptions, // Spread base options (transformer-level options)
+      transform: { // Options for the Babel preset (metro-react-native-babel-preset)
+        ...baseOptions.transform, // Spread any options already in baseOptions.transform
+        experimentalImportSupport: false,
+        inlineRequires: true,
+        // Explicitly add/override platform, dev, hot, projectRoot for the preset
+        // These are taken directly from what Metro provides to getTransformOptions
+        platform: metroTransformerOptions.platform,
+        dev: metroTransformerOptions.dev,
+        hot: metroTransformerOptions.hot,
+        projectRoot: metroTransformerOptions.projectRoot,
+      },
+    };
+  };
+
+  defaultConfig.resolver.assetExts = assetExts.filter(ext => ext !== 'svg');
+  defaultConfig.resolver.sourceExts = updatedSourceExts;
+  defaultConfig.resolver.blockList = exclusionList([/^(?!.*node_modules).*\/(amplify|src\/graphql)\/.*$/]);
+
+  const defaultExtraNodeModules = defaultConfig.resolver.extraNodeModules || {};
+  delete defaultExtraNodeModules.fs;
+
+  defaultConfig.resolver.extraNodeModules = {
+    ...defaultExtraNodeModules,
+    ...nodeLibs,
+    // 'make-plural' and 'crypto-ld' are handled by resolveRequest
+    'react-native-date-picker': path.resolve(__dirname, 'dummyDatePickerIOS.js'),
+    '@mattrglobal/bbs-signatures': path.resolve(__dirname, 'node_modules/@mattrglobal/bbs-signatures/lib/index.js'), // Use main entry point
+  };
+
+  defaultConfig.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (moduleName === 'make-plural') {
+      // console.log(`Metro resolveRequest: 'make-plural' -> plurals.js`);
+      return {
+        filePath: path.resolve(__dirname, 'node_modules/make-plural/plurals.js'),
+        type: 'sourceFile',
+      };
+    }
+
+    if (moduleName === 'crypto-ld') {
+      // console.log(`Metro resolveRequest: 'crypto-ld' -> lib/index.js`);
+      return {
+        filePath: path.resolve(__dirname, 'node_modules/crypto-ld/lib/index.js'),
+        type: 'sourceFile',
+      };
+    }
+
+    if (moduleName === 'fs') {
+      // console.log(`Metro resolveRequest: 'fs' -> dummyFs.js`);
+      const resolvedPath = path.resolve(__dirname, 'dummyFs.js');
+      return {
+        filePath: resolvedPath,
+        type: 'sourceFile',
+      };
+    }
+
+    if (moduleName === './Libraries/Components/DrawerAndroid/DrawerLayoutAndroid' &&
+        context.originModulePath &&
+        context.originModulePath.endsWith('node_modules/react-native/index.js')) {
+      // console.log(`Metro resolveRequest: RN DrawerLayoutAndroid -> dummyDrawerLayoutAndroid.js`);
+      return {
+        filePath: path.resolve(__dirname, 'dummyDrawerLayoutAndroid.js'),
+        type: 'sourceFile',
+      };
+    }
+
+    if (moduleName === './Libraries/Components/DatePicker/DatePickerIOS' &&
+        context.originModulePath &&
+        context.originModulePath.endsWith('node_modules/react-native/index.js')) {
+      // console.log(`Metro resolveRequest: RN DatePickerIOS -> dummyDatePickerIOS.js`);
+      return {
+        filePath: path.resolve(__dirname, 'dummyDatePickerIOS.js'),
+        type: 'sourceFile',
+      };
+    }
+
+    return context.resolveRequest(context, moduleName, platform);
+  };
+
+  return defaultConfig;
+})();

@@ -14,7 +14,8 @@ Pod::Spec.new do |spec|
   spec.module_name = 'boost'
   spec.header_dir = 'boost'
   spec.source_files = 'boost/**/*.{h,hpp}' # Changed to include .hpp
-  spec.public_header_files = 'boost/**/*.{h,hpp}' # Changed to include .hpp
+  spec.header_mappings_dir = 'boost'
+  spec.public_header_files = '**/*.{h,hpp}' # Relative to header_mappings_dir
   
   spec.compiler_flags   = '-Wno-shorten-64-to-32 -Wno-implicit-int-conversion -Wno-unneeded-internal-declaration'
   spec.pod_target_xcconfig = {
